@@ -3,6 +3,10 @@ const city = document.getElementById('city');
 const country = document.getElementById('country');
 const submit = document.getElementById('submit');
 
+const findZip = () => {
+    window.open('https://www.geonames.org/postalcode-search.html', '_blank');
+}
+
 const postData = async (url, data = {}) => {
     console.log(url, data);
     const formData = await fetch(url, {
@@ -41,5 +45,6 @@ const handleSubmit = (e) => {
 export { 
     //getLocation,
     postData,
-    handleSubmit
+    handleSubmit,
+    findZip
  }

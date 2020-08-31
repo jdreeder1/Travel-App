@@ -39,14 +39,16 @@ const getLocation = async (zp, cty, cntry, key) => {
         const res = await fetch (`http://api.geonames.org/postalCodeSearchJSON?postalcode=${zp}&placename=${cty}&country=${cntry}&maxRows=10&username=${key}`) 
         try {
             //converts data to json
-            const resp = await res.json()
+            const resp = await res.json();
+            //console.log(resp);
             try {
                 let response = resp;
                 //location.postalCodes[0].lat;
                 //location.postalCodes[0].lng;
                 let coords = {
                     latitude: response.postalCodes[0].lat,
-                    longitude: response.postalCodes[0].lng
+                    longitude: response.postalCodes[0].lng,
+                    adminName1: response.postalCodes[0].adminName1 
                 }; 
                 //postData(coords);
                 return coords;
@@ -89,12 +91,12 @@ const setHistoricalDates = (arrive) => {
     let histDtObj = new Date(`${historicalYear}-${historicalMonth}-${historicalDay}`);
     let histEndDt = new Date(`${historicalYear}-${historicalMonth}-${histEndDay}`);
 
-    console.log(histDtObj, histEndDt);
+    //console.log(histDtObj, histEndDt);
 
     let historicalDate = formatDate(histDtObj);
     let historicalEndDate = formatDate(histEndDt);
 
-    console.log(historicalDate, historicalEndDate);
+    //console.log(historicalDate, historicalEndDate);
 
     let histDates = {
         histStDate: historicalDate,
@@ -171,25 +173,38 @@ const getWeather = async (lat, lon, fcast, arrive) => {
         }
     }
 };
+//Pixabay example request:
+//https://pixabay.com/api/?key=18060529-1e910e7d3f19e8c33112b65b8&q=yellow+flowers&image_type=photo
+
+const getImage = async (city, adminName1) => {
+    const res = await fetch(`https://pixabay.com/api/?key=${process.env.PIXABAY_API_KEY}&q=${city}+${adminName1}&image_type=photo&order=popular&per_page=3`);
+    try {
+        const resp = await res.json();
+        try {
+            let pic1 = resp.hits[0].webformatURL;
+            projectData.pic = pic1;
+        }
+        catch(error){   
+            console.log(error);
+        }
+    }
+    catch (error) {
+        console.log('error: ', error);
+    }
+};
 
 app.post('/test', async (req, res) => {
     //zip=65202&city=Columbia&country=US
-    //res.send(req.body);
     let code = req.body.zip;
     let cty = req.body.city;
     let ctry = req.body.country;
     let arrive = req.body.arrive;
-
-    //console.log(arrive);
-
 
     let newDate = new Date();
     newDate.setDate(newDate.getDate() + 7);
 
     let oneWeekAway = formatDate(newDate);
     let forecast;
-
-    //console.log(oneWeekAway);
 
     if(arrive <= oneWeekAway){
         forecast = 'current';
@@ -202,8 +217,10 @@ app.post('/test', async (req, res) => {
     try {
         let latitude = coords.latitude;
         let longitude = coords.longitude;
+        let adminName1 = coords.adminName1;
         //res.status(status).send(body) => correct way to 'send'
-        await getWeather(latitude, longitude, forecast, arrive);
+        let weather = await getWeather(latitude, longitude, forecast, arrive);
+        let image = await getImage(cty, adminName1);
     }
     catch(error){
         console.log(error);

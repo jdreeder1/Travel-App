@@ -28,11 +28,11 @@
             <section>
                 <form class="" method="POST" action="/test">
                     <label for="zip">Enter Zip/Postal Code Here</label><br>
-                    <input type="text" name="zip" id="zip" placeholder="enter zip/postal code here" required> <span class="req">required</span><br>
+                    <span class="req">*</span><input type="text" name="zip" id="zip" placeholder="enter zip/postal code here" required> &nbsp; <a class="findZip" onclick="return Client.findZip()">Find my zip/postal code</a> <br>
                     <label for="city">Enter City Here</label><br>
-                    <input type="text" name="city" id="city" placeholder="enter city name here" required> <span class="req">required</span><br>
+                    <span class="req">*</span><input type="text" name="city" id="city" placeholder="enter city name here" required><br>
                     <label for="country">Select Country</label><br>
-                    <select name="country" id="country" required>
+                    <span class="req">*</span><select name="country" id="country" required>
                         <option value="AD">Andorra</option>
                         <option value="AE">United Arab Emirates</option>
                         <option value="AF">Afghanistan</option>
@@ -285,15 +285,16 @@
                         <option value="YT">Mayotte</option>
                         <option value="ZA">South Africa</option>
                         <option value="ZM">Zambia</option>
-                    </select> <span class="req">required</span> <br><br>
+                    </select> <br><br>
                     <label for="arrive">When do you plan to arrive?</label><br><br>
-                    <input type="date" name="arrive" id="arrive"><br><br>
+                    <span class="required">*</span><input type="date" name="arrive" id="arrive" required> <br><br>
                     <input type="submit" id="submit" value="Submit" onsubmit="return Client.handleSubmit(event)">
                     <button id="retrieve" onclick="return Client.updateUI()">Get Results</button>
                 </form>
             </section>
             <section>
-                <strong>Form Results:</strong>
+                <br><br>
+                <div id="placeImg"></div>
                 <div id="results"></div>
             </section>
         </main>

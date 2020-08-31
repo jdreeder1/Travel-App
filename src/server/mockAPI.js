@@ -1,3 +1,19 @@
+let coords = {
+    "postalCodes": [
+        {
+            "adminCode2": "019",
+            "adminCode1": "MO",
+            "adminName2": "Boone",
+            "lng": -92.286377,
+            "countryCode": "US",
+            "postalCode": "65039",
+            "adminName1": "Missouri",
+            "ISO3166-2": "MO",
+            "placeName": "Hartsburg",
+            "lat": 38.715902
+        }
+    ]
+};
 //weatherbit using hartsburg's coords
 let json = {
     "data": [
@@ -809,5 +825,84 @@ let histData = {
     ],
     "city_id": "4887398"
   }
+//pixabay
+let pics = {
+    "total": 2520,
+    "totalHits": 500,
+    "hits": [
+        {
+            "id": 336475,
+            "pageURL": "https://pixabay.com/photos/new-york-city-brooklyn-bridge-night-336475/",
+            "type": "photo",
+            "tags": "new york city, brooklyn bridge, night",
+            "previewURL": "https://cdn.pixabay.com/photo/2014/05/02/23/46/new-york-city-336475_150.jpg",
+            "previewWidth": 150,
+            "previewHeight": 99,
+            "webformatURL": "https://pixabay.com/get/55e3d3474d57b10ff3d8992cc6203778153adcec4e5074407d277fd19e44c5_640.jpg",
+            "webformatWidth": 640,
+            "webformatHeight": 426,
+            "largeImageURL": "https://pixabay.com/get/55e3d3474d57b108f5d0846096293f7e133fdbe75a4c704c7c2773d09244cc58_1280.jpg",
+            "imageWidth": 3000,
+            "imageHeight": 2000,
+            "imageSize": 1230835,
+            "views": 602061,
+            "downloads": 432654,
+            "favorites": 883,
+            "likes": 967,
+            "comments": 165,
+            "user_id": 242387,
+            "user": "Free-Photos",
+            "userImageURL": "https://cdn.pixabay.com/user/2014/05/07/00-10-34-2_250x250.jpg"
+        },
+        {
+            "id": 336708,
+            "pageURL": "https://pixabay.com/photos/manhattan-empire-state-building-336708/",
+            "type": "photo",
+            "tags": "manhattan, empire state building, new york city",
+            "previewURL": "https://cdn.pixabay.com/photo/2014/05/03/01/04/manhattan-336708_150.jpg",
+            "previewWidth": 150,
+            "previewHeight": 84,
+            "webformatURL": "https://pixabay.com/get/55e3d3444a5ab10ff3d8992cc6203778153adcec4e5074407d277fd19e44c5_640.jpg",
+            "webformatWidth": 640,
+            "webformatHeight": 360,
+            "largeImageURL": "https://pixabay.com/get/55e3d3444a5ab108f5d0846096293f7e133fdbe75a4c704c7c2773d09244cc58_1280.jpg",
+            "imageWidth": 2560,
+            "imageHeight": 1440,
+            "imageSize": 1587009,
+            "views": 664447,
+            "downloads": 473650,
+            "favorites": 990,
+            "likes": 864,
+            "comments": 201,
+            "user_id": 242387,
+            "user": "Free-Photos",
+            "userImageURL": "https://cdn.pixabay.com/user/2014/05/07/00-10-34-2_250x250.jpg"
+        },
+        {
+            "id": 381233,
+            "pageURL": "https://pixabay.com/photos/taxi-cab-traffic-cab-new-york-381233/",
+            "type": "photo",
+            "tags": "taxi cab, traffic, cab",
+            "previewURL": "https://cdn.pixabay.com/photo/2014/07/01/12/35/taxi-cab-381233_150.jpg",
+            "previewWidth": 150,
+            "previewHeight": 99,
+            "webformatURL": "https://pixabay.com/get/55e8d4414951b10ff3d8992cc6203778153adcec4e5074407d277fd19e44c5_640.jpg",
+            "webformatWidth": 640,
+            "webformatHeight": 425,
+            "largeImageURL": "https://pixabay.com/get/55e8d4414951b108f5d0846096293f7e133fdbe75a4c704c7c2773d09244cc58_1280.jpg",
+            "imageWidth": 5450,
+            "imageHeight": 3623,
+            "imageSize": 5604087,
+            "views": 679918,
+            "downloads": 506887,
+            "favorites": 921,
+            "likes": 825,
+            "comments": 119,
+            "user_id": 242387,
+            "user": "Free-Photos",
+            "userImageURL": "https://cdn.pixabay.com/user/2014/05/07/00-10-34-2_250x250.jpg"
+        }
+    ]
+};  
 
 module.exports = json
