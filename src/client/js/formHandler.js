@@ -1,16 +1,45 @@
-function handleSubmit(event) {
-    event.preventDefault()
+const zip = document.getElementById('zip');
+const city = document.getElementById('city');
+const country = document.getElementById('country');
+const submit = document.getElementById('submit');
 
-    // check what text was put into the form field
-    let formText = document.getElementById('name').value
-    checkForName(formText)
+const postData = async (url, data = {}) => {
+    console.log(url, data);
+    const formData = await fetch(url, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data) 
+    });    
+    try {
+        const placeInfo = await formData.json();
+        return placeInfo;
+    } catch {
+        error => console.log(error);
+    }
+};
+const handleSubmit = (e) => {
+    
+    let zipCode = zip.value;
+    let cityName = city.value;
+    let countryCode = country.options[country.selectedIndex].value;   
 
-    console.log("::: Form Submitted :::")
-    fetch('http://localhost:8080/test')
-    .then(res => res.json())
-    .then(function(res) {
-        document.getElementById('results').innerHTML = res.message
-    })
-}
+    if(zipCode == "" || cityName == ""){
+        alert('All required fields need to be filled out!');
+        return;
+    }
+    else {
+        const formData = new FormData(this);
+        //let data = {zp: zipCode, cty: cityName, cntry: countryCode};
+        postData('/test', formData);    
+    }
+ 
+};
 
-export { handleSubmit }
+export { 
+    //getLocation,
+    postData,
+    handleSubmit
+ }

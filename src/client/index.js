@@ -1,7 +1,7 @@
-import { checkForName } from './js/nameChecker'
-import { postData } from './js/nameChecker'
+import { handleSubmit } from './js/formHandler';
+import { updateUI } from './js/updateUI';
 
 export {
-    checkForName,
-    postData
+    handleSubmit,
+    updateUI
 }

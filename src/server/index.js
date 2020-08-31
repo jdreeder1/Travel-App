@@ -49,7 +49,7 @@ const getLocation = async (zp, cty, cntry, key) => {
                     longitude: response.postalCodes[0].lng
                 }; 
                 //postData(coords);
-                console.log(coords);
+                return coords;
             }
             catch(error){   
                 console.log(error);
@@ -61,12 +61,158 @@ const getLocation = async (zp, cty, cntry, key) => {
         }
     };
 
+let formatDate = (dt) => {
+
+    let isoFormat = dt.toISOString();
+    //let isoFormat2 = newDate.toISOString();
+    let isoArr = isoFormat.split('');
+
+    let findInd = isoArr.findIndex((x) => {
+        return x == 'T';
+    });
+    let slcArr = isoArr.splice(findInd, isoArr.length);
+    let joinArr = isoArr.join('');
+
+    return joinArr;
+};
+
+const setHistoricalDates = (arrive) => {
+    let dateObj = new Date(arrive);
+    let dateObj2 = new Date(arrive);
+
+    let historicalMonth = dateObj.getMonth()+1;
+    let historicalDay = dateObj.getDate()+1;
+    let historicalYear = dateObj.getFullYear()-1;
+
+    let histEndDay = dateObj2.getDate()+2;
+
+    let histDtObj = new Date(`${historicalYear}-${historicalMonth}-${historicalDay}`);
+    let histEndDt = new Date(`${historicalYear}-${historicalMonth}-${histEndDay}`);
+
+    console.log(histDtObj, histEndDt);
+
+    let historicalDate = formatDate(histDtObj);
+    let historicalEndDate = formatDate(histEndDt);
+
+    console.log(historicalDate, historicalEndDate);
+
+    let histDates = {
+        histStDate: historicalDate,
+        histEndDate: historicalEndDate
+    };
+
+    return histDates;
+};
+
+const getWeather = async (lat, lon, fcast, arrive) => {
+    
+    let histDates = setHistoricalDates(arrive);
+
+    if(fcast == 'current'){
+        //Example request:
+        //https://api.weatherbit.io/v2.0/forecast/daily?lat=38.123&lon=-78.543&units=I&key=a9d713df8e3f4fcba6e614cd20de9cda
+        const res = await fetch(`https://api.weatherbit.io/v2.0/forecast/daily?lat=${lat}&lon=${lon}&days=7&units=I&key=${process.env.WEATHERBIT_API_KEY}`)
+        try {
+            //converts data to json
+            const resp = await res.json();
+            try {
+                //let response = resp;
+                
+                let findDay = resp.data.findIndex((x) =>{
+                    return x.valid_date.includes(arrive);
+                });
+
+                let weatherData = {
+                    low_temp: resp.data[findDay].low_temp,
+                    high_temp: resp.data[findDay].max_temp,
+                    precip: resp.data[findDay].precip,
+                    wind_spd: resp.data[findDay].wind_spd,
+                    description: resp.data[findDay].weather.description,
+                    valid_date: resp.data[findDay].valid_date,
+                    forecast: fcast
+                }; 
+                //postData(coords);
+                projectData = weatherData;
+            }
+            catch(error){   
+                console.log(error);
+            }
+            
+        }
+        catch (error) {
+            console.log('error: ', error);
+        }
+    }
+    else if(fcast == 'historical'){
+        const res = await fetch(`https://api.weatherbit.io/v2.0/history/daily?lat=${lat}&lon=${lon}&start_date=${histDates.histStDate}&end_date=${histDates.histEndDate}&units=I&key=${process.env.WEATHERBIT_API_KEY}`)
+        try {
+            //converts data to json
+            const resp = await res.json();
+            try {
+                
+                let weatherData = {
+                    low_temp: resp.data[0].min_temp,
+                    high_temp: resp.data[0].max_temp,
+                    precip: resp.data[0].precip, 
+                    wind_spd: resp.data[0].wind_spd, 
+                    datetime: resp.data[0].datetime,
+                    forecast: fcast
+                }; 
+                //postData(coords);
+                projectData = weatherData;
+            }
+            catch(error){   
+                console.log(error);
+            }
+            
+        }
+        catch (error) {
+            console.log('error: ', error);
+        }
+    }
+};
+
 app.post('/test', async (req, res) => {
     //zip=65202&city=Columbia&country=US
     //res.send(req.body);
     let code = req.body.zip;
     let cty = req.body.city;
     let ctry = req.body.country;
+    let arrive = req.body.arrive;
 
-    getLocation(code, cty, ctry, process.env.GEONAMES_USERNAME);
+    //console.log(arrive);
+
+
+    let newDate = new Date();
+    newDate.setDate(newDate.getDate() + 7);
+
+    let oneWeekAway = formatDate(newDate);
+    let forecast;
+
+    //console.log(oneWeekAway);
+
+    if(arrive <= oneWeekAway){
+        forecast = 'current';
+    }
+    else if(arrive > oneWeekAway){
+        forecast = 'historical';
+    }
+
+    const coords = await getLocation(code, cty, ctry, process.env.GEONAMES_USERNAME);
+    try {
+        let latitude = coords.latitude;
+        let longitude = coords.longitude;
+        //res.status(status).send(body) => correct way to 'send'
+        await getWeather(latitude, longitude, forecast, arrive);
+    }
+    catch(error){
+        console.log(error);
+    }
+    
 });
+
+const sendData = (req, res) => { 
+    res.send(projectData);
+};
+
+app.get('/update', sendData);
