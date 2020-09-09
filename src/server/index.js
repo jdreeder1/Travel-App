@@ -5,7 +5,6 @@ const path = require('path')
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
-//const mockAPIResponse = require('./mockAPI.js')
 const fetch = require('node-fetch') //fetch api not native to node
 
 const app = express()
@@ -24,14 +23,14 @@ let projectData = {};
 console.log(__dirname)
 
 app.get('/', function (req, res) {
-     res.sendFile('dist/index.html')
+    //res.sendFile(path.join(__dirname+'/mockAPI.js')); 
+    res.sendFile('dist/index.html')
     //res.sendFile(path.resolve('src/client/views/index.html'))
 })
 
 // designates what port the app will listen to for incoming requests
 app.listen(3000, function () {
-    console.log('Example app listening on port 3000!')
-    console.log(process.env.GEONAMES_USERNAME)
+    console.log('Travel app listening on port 3000!')
 })
 
 const getLocation = async (zp, cty, cntry, key) => {
@@ -54,19 +53,20 @@ const getLocation = async (zp, cty, cntry, key) => {
                 return coords;
             }
             catch(error){   
-                console.log(error);
+                   console.log('errorobj: ', error);
+ 
             }
             
         }
         catch (error) {
-            console.log('error: ', error);
+            //console.log('error: ', error);
+                console.log('error: ', error);
         }
     };
 
 let formatDate = (dt) => {
 
     let isoFormat = dt.toISOString();
-    //let isoFormat2 = newDate.toISOString();
     let isoArr = isoFormat.split('');
 
     let findInd = isoArr.findIndex((x) => {
@@ -177,6 +177,7 @@ const getWeather = async (lat, lon, fcast, arrive) => {
 //https://pixabay.com/api/?key=18060529-1e910e7d3f19e8c33112b65b8&q=yellow+flowers&image_type=photo
 
 const getImage = async (city, adminName1) => {
+    console.log(city, adminName1);
     const res = await fetch(`https://pixabay.com/api/?key=${process.env.PIXABAY_API_KEY}&q=${city}+${adminName1}&image_type=photo&order=popular&per_page=3`);
     try {
         const resp = await res.json();
@@ -189,16 +190,39 @@ const getImage = async (city, adminName1) => {
         }
     }
     catch (error) {
-        console.log('error: ', error);
-    }
+        console.log('error: ', error);       
+    }    
 };
 
+const getFlag = async (ctry) => {
+    const res = await fetch(`https://restcountries.eu/rest/v2/alpha/${ctry}`);
+    try {
+        const resp = await res.json();
+        console.log(resp);
+
+        try {
+            let flg = resp.flag;
+            projectData.flag = flg;
+        }
+        catch(error){   
+            console.log(error);
+        }
+    }
+    catch (error) {
+        console.log('error: ', error);       
+    }    
+}
+
 app.post('/test', async (req, res) => {
+    projectData = {};
     //zip=65202&city=Columbia&country=US
     let code = req.body.zip;
     let cty = req.body.city;
     let ctry = req.body.country;
     let arrive = req.body.arrive;
+    //let countryName = req.body.countryName;
+
+    console.log(ctry);
 
     let newDate = new Date();
     newDate.setDate(newDate.getDate() + 7);
@@ -221,6 +245,7 @@ app.post('/test', async (req, res) => {
         //res.status(status).send(body) => correct way to 'send'
         let weather = await getWeather(latitude, longitude, forecast, arrive);
         let image = await getImage(cty, adminName1);
+        let flag = await getFlag(ctry);
     }
     catch(error){
         console.log(error);
@@ -228,7 +253,7 @@ app.post('/test', async (req, res) => {
     
 });
 
-const sendData = (req, res) => { 
+const sendData = (req, res) => {    
     res.send(projectData);
 };
 

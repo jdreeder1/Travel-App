@@ -1,0 +1,62 @@
+$secondary-color2: #012652;
+$primary-color2: #0D94FB;
+
+.formSubmit {
+    border: 1px solid #545454;
+    border-radius: 3px;
+    padding: 40px;
+    background: $secondary-color2;
+
+    transition: display 700ms ease-in-out;
+    overflow: hidden; 
+    input, button, select {
+        transition: 400ms ease-in-out;
+        &:hover {
+            transform: scale(1.05);
+        }
+    }   
+}
+
+.resSection {
+    transition: transform 800ms ease-in-out;
+}
+
+.formSubmit.hide {
+    display: none;
+}
+
+.resSection.show {
+    transform: translateY(-10px);    
+}
+
+input, #retrieve {
+    padding: 5px 20px;
+    width: 100%;
+    line-height: 16px;
+    margin: 10px 0;
+}
+
+.findZip {
+    &:hover{
+        cursor: pointer;
+    }
+}
+
+#newTrip, #saveTrip, #getSavedTrip {
+    width: 95%;
+    padding: 5px;
+    font-size: 1.2em;
+    border-radius: 3px;
+    background: $secondary-color2;
+    color: white;
+    transition: 400ms ease-in-out;
+    &:hover {
+        cursor: pointer;
+        transform: scale(1.05);
+    }
+}
+
+#getSavedTrip {
+    background: $primary-color2;
+    width: 50%;
+}

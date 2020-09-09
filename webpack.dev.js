@@ -31,7 +31,8 @@ module.exports = {
       //allows dev environment to post to prod server
       devServer: {
         proxy: {
-          '/test': 'http://localhost:3000'
+          '/test': 'http://localhost:3000',
+          '/update': 'http://localhost:3000' 
         }
       }, 
     plugins: [

@@ -1,0 +1,120 @@
+$primary-color2: #0D94FB;
+
+body {
+    display: grid;
+    grid-template-columns: repeat(3, 33vw);
+    grid-template-rows: 100px 1fr 1fr;    
+    gap: 50px;    
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    background: $primary-color2;
+    color: white;
+}
+
+header {
+    grid-row: 1; 
+    grid-column: 1/-1;  
+    width: 100%;
+}
+
+.formSection {
+    display: grid;
+    grid-template-columns: repeat(3, 33vw);
+}
+
+.formSubmit {
+    grid-column: 2; 
+    width: 100%;
+}
+
+.resSection {
+    display: grid;
+    grid-template-columns: 10vw 40vw 40vw 10vw;
+    grid-template-rows: 1fr 1fr; 
+}
+
+#placeImg {
+    grid-column: 2;
+    grid-row: 1;
+    justify-content: center;
+    align-items: center;
+}
+
+#results {
+    grid-column: 3;
+    grid-row: 1;
+    font-size: 2.2em;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 80px 300px 50px;
+}
+
+#head {
+    grid-column: 1/-1;
+    grid-row: 1;
+}
+
+#col1 {
+    grid-column: 1;
+    grid-row: 2;
+    width: 100%;
+}
+
+#col2 {
+    grid-column: 2;
+    grid-row: 2;
+    width: 100%;
+}
+
+#foot1 {
+    grid-column: 1;
+    grid-row: 3;
+}
+
+#foot2 {
+    grid-column: 2;
+    grid-row: 3;
+}
+
+#errorAlert {
+    font-size: 2.2em;
+}
+
+@media(max-width: 1285px){
+    .formSection {
+        display: grid;
+        grid-template-columns: 20vw 60vw 20vw;
+    }
+
+    .resSection {
+        display: grid;
+        grid-template-columns: 10vw 90vw 1fr;
+        justify-content: stretch;
+        /*grid-template-rows: repeat(3, 1fr); */
+    }
+
+    #placeImg {
+        grid-column: 2;
+        grid-row: 1;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    #results {
+        grid-column: 2;
+        grid-row: 2;
+        font-size: 2.2em;
+        display: grid;
+        grid-template-columns: 50% 50%;
+        grid-template-rows: 0.5fr 1fr 50px;       /*repeat(3, 1fr);    200px 350px 50px;*/
+    }
+
+    #newTrip, #saveTrip {
+        padding: 5px;
+        font-size: 1em;
+        width: 80%;
+    }
+
+    #cityPic {
+        width: 100%;
+    }
+}
