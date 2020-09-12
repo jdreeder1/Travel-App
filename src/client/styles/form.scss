@@ -1,5 +1,7 @@
 $secondary-color2: #012652;
 $primary-color2: #0D94FB;
+$light-gray : #CCCCCC;
+
 
 .formSubmit {
     border: 1px solid #545454;
@@ -11,6 +13,7 @@ $primary-color2: #0D94FB;
     overflow: hidden; 
     input, button, select {
         transition: 400ms ease-in-out;
+        background: $light-gray;
         &:hover {
             transform: scale(1.05);
         }

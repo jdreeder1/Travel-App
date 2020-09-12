@@ -34,22 +34,15 @@ This project uses numerous dependencies, including:
 ```
 
 - To install these dependencies, download NPM and clone this repository. Make sure you're in the same file directory you cloned this repo to in either a NPM or Git Command Terminal, then type `npm install` to install the above dependencies. 
-- To use this app, you need to have an API key from MeaningCloud for Sentiment Analysis. Click this [link](https://www.meaningcloud.com/developer/getting-started) to setup an account with MeaningCloud to get an API key. Click this [link](https://www.meaningcloud.com/developer/sentiment-analysis/doc) to learn more about MeaningCloud's Sentiment Analysis API.
+- To use this app, you need to have API keys from [Geonames](http://www.geonames.org/export/web-services.html), [Weatherbit](https://www.weatherbit.io/api) and [Pixabay](https://pixabay.com/service/about/api/). 
 
 ## Usage
 - Find the server-side index file by navigating through the `src` then `server` folders and opening the `index.js` file. 
-- Store your MeaningCloud API key as a variable in the `index.js` file. Replace the `process.env.API_KEY` variable in line 36 with the variable name you used to store your API key.  
+- Store your API keys as variables in the `index.js` file. Replace the `process.env` variables with the variable names you used to store your API keys.  
 - Make sure you're in the same file directory you cloned this repo to in either a NPM or Git Command Terminal and type `npm run build-prod` (this will cause Webpack to create a 'dist' folder, effectively building the production environment for this app).  
 - Type `npm run start` in the same Command Terminal in the same directory as the previous step to setup a local server. 
 - Open your preferred browser and type `localhost:3000` in the address bar and hit enter. 
-- Type or copy/paste a valid http or https URL into the provided text area then click 'submit'.
-- Click 'get results' to reveal what MeaningCloud's Sentiment Analysis API gleaned about the text content on the website you entered.
-
-
-## Suggestion to Make Your Project Stand Out used: 
- - Results show the flag of the country the user plans to visit based on a fetch request from the REST Countries API.
- - Pull in an image from Pixabay API when the entered location brings up no results.
- - Use Local Storage to save the data so that when the user closes, then revisits the page, their information is still there.
- 
-
-
+- Type in the zip code and city name, select the country from the provided dropdown menu, and pick the arrival date, then click the 'Submit' button. 
+- Click 'Get Results' to view the projected forecast, country flag and picture of your chosen destination.
+- Click 'Save Trip' to save the trip details or 'New Trip' to input a new destination.
+- Selecting 'New trip' will take you to the homepage form again, where you can pick a new destination or retrieve saved trip details by clicking the 'Retrieve Saved Trip' button.

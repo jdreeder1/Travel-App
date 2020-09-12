@@ -20,50 +20,39 @@ app.use(express.static('dist'))
 
 let projectData = {};
 
-console.log(__dirname)
-
-app.get('/', function (req, res) {
-    //res.sendFile(path.join(__dirname+'/mockAPI.js')); 
+app.get('/', (req, res) => {
     res.sendFile('dist/index.html')
-    //res.sendFile(path.resolve('src/client/views/index.html'))
 })
 
 // designates what port the app will listen to for incoming requests
-app.listen(3000, function () {
-    console.log('Travel app listening on port 3000!')
-})
+app.listen(3000); 
 
+//retrieves latitude and longitude coordinates for chosen destination from geonames api
 const getLocation = async (zp, cty, cntry, key) => {
-    //name=hartsburg&country=US
-        const res = await fetch (`http://api.geonames.org/postalCodeSearchJSON?postalcode=${zp}&placename=${cty}&country=${cntry}&maxRows=10&username=${key}`) 
+    const res = await fetch (`http://api.geonames.org/postalCodeSearchJSON?postalcode=${zp}&placename=${cty}&country=${cntry}&maxRows=10&username=${key}`) 
+    try {
+        //converts data to json
+        const resp = await res.json();
         try {
-            //converts data to json
-            const resp = await res.json();
-            //console.log(resp);
-            try {
-                let response = resp;
-                //location.postalCodes[0].lat;
-                //location.postalCodes[0].lng;
-                let coords = {
-                    latitude: response.postalCodes[0].lat,
-                    longitude: response.postalCodes[0].lng,
-                    adminName1: response.postalCodes[0].adminName1 
-                }; 
-                //postData(coords);
-                return coords;
-            }
-            catch(error){   
-                   console.log('errorobj: ', error);
- 
-            }
-            
+            let response = resp;
+            let coords = {
+                latitude: response.postalCodes[0].lat,
+                longitude: response.postalCodes[0].lng,
+                adminName1: response.postalCodes[0].adminName1 
+            }; 
+            return coords;
         }
-        catch (error) {
-            //console.log('error: ', error);
-                console.log('error: ', error);
+        catch(error){   
+                console.log('errorobj: ', error); 
         }
-    };
+        
+    }
+    catch (error) {
+            console.log('error: ', error);
+    }
+};
 
+//converts date object into simple iso string
 let formatDate = (dt) => {
 
     let isoFormat = dt.toISOString();
@@ -78,6 +67,7 @@ let formatDate = (dt) => {
     return joinArr;
 };
 
+//picks the date exactly one year before the chosen arrival date (used for Weatherbit's historical forecast api) 
 const setHistoricalDates = (arrive) => {
     let dateObj = new Date(arrive);
     let dateObj2 = new Date(arrive);
@@ -91,12 +81,8 @@ const setHistoricalDates = (arrive) => {
     let histDtObj = new Date(`${historicalYear}-${historicalMonth}-${historicalDay}`);
     let histEndDt = new Date(`${historicalYear}-${historicalMonth}-${histEndDay}`);
 
-    //console.log(histDtObj, histEndDt);
-
     let historicalDate = formatDate(histDtObj);
     let historicalEndDate = formatDate(histEndDt);
-
-    //console.log(historicalDate, historicalEndDate);
 
     let histDates = {
         histStDate: historicalDate,
@@ -106,20 +92,17 @@ const setHistoricalDates = (arrive) => {
     return histDates;
 };
 
+//retrieves current or historical forecast from weatherbit api depending on chosen arrival date
 const getWeather = async (lat, lon, fcast, arrive) => {
     
     let histDates = setHistoricalDates(arrive);
 
     if(fcast == 'current'){
-        //Example request:
-        //https://api.weatherbit.io/v2.0/forecast/daily?lat=38.123&lon=-78.543&units=I&key=a9d713df8e3f4fcba6e614cd20de9cda
         const res = await fetch(`https://api.weatherbit.io/v2.0/forecast/daily?lat=${lat}&lon=${lon}&days=7&units=I&key=${process.env.WEATHERBIT_API_KEY}`)
         try {
             //converts data to json
             const resp = await res.json();
-            try {
-                //let response = resp;
-                
+            try {                
                 let findDay = resp.data.findIndex((x) =>{
                     return x.valid_date.includes(arrive);
                 });
@@ -133,7 +116,6 @@ const getWeather = async (lat, lon, fcast, arrive) => {
                     valid_date: resp.data[findDay].valid_date,
                     forecast: fcast
                 }; 
-                //postData(coords);
                 projectData = weatherData;
             }
             catch(error){   
@@ -151,7 +133,6 @@ const getWeather = async (lat, lon, fcast, arrive) => {
             //converts data to json
             const resp = await res.json();
             try {
-                
                 let weatherData = {
                     low_temp: resp.data[0].min_temp,
                     high_temp: resp.data[0].max_temp,
@@ -160,7 +141,6 @@ const getWeather = async (lat, lon, fcast, arrive) => {
                     datetime: resp.data[0].datetime,
                     forecast: fcast
                 }; 
-                //postData(coords);
                 projectData = weatherData;
             }
             catch(error){   
@@ -173,9 +153,8 @@ const getWeather = async (lat, lon, fcast, arrive) => {
         }
     }
 };
-//Pixabay example request:
-//https://pixabay.com/api/?key=18060529-1e910e7d3f19e8c33112b65b8&q=yellow+flowers&image_type=photo
 
+//retrieves image of city chosen as the user's destination from pixabay api
 const getImage = async (city, adminName1) => {
     console.log(city, adminName1);
     const res = await fetch(`https://pixabay.com/api/?key=${process.env.PIXABAY_API_KEY}&q=${city}+${adminName1}&image_type=photo&order=popular&per_page=3`);
@@ -194,6 +173,7 @@ const getImage = async (city, adminName1) => {
     }    
 };
 
+//retrieves image of the country flag for the user's chosen destination 
 const getFlag = async (ctry) => {
     const res = await fetch(`https://restcountries.eu/rest/v2/alpha/${ctry}`);
     try {
@@ -213,16 +193,14 @@ const getFlag = async (ctry) => {
     }    
 }
 
+//end point for formdata post with a callback function used to control api request execution
 app.post('/test', async (req, res) => {
     projectData = {};
-    //zip=65202&city=Columbia&country=US
+
     let code = req.body.zip;
     let cty = req.body.city;
     let ctry = req.body.country;
     let arrive = req.body.arrive;
-    //let countryName = req.body.countryName;
-
-    console.log(ctry);
 
     let newDate = new Date();
     newDate.setDate(newDate.getDate() + 7);
@@ -242,7 +220,7 @@ app.post('/test', async (req, res) => {
         let latitude = coords.latitude;
         let longitude = coords.longitude;
         let adminName1 = coords.adminName1;
-        //res.status(status).send(body) => correct way to 'send'
+
         let weather = await getWeather(latitude, longitude, forecast, arrive);
         let image = await getImage(cty, adminName1);
         let flag = await getFlag(ctry);
@@ -253,8 +231,14 @@ app.post('/test', async (req, res) => {
     
 });
 
+//sends selected api request data to client side
 const sendData = (req, res) => {    
     res.send(projectData);
 };
 
 app.get('/update', sendData);
+
+//exports functions used in testing
+exports.formatDate = formatDate;
+exports.setHistoricalDates = setHistoricalDates;
+

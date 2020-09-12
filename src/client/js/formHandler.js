@@ -1,13 +1,13 @@
 const zip = document.getElementById('zip');
 const city = document.getElementById('city');
-const country = document.getElementById('country');
-const submit = document.getElementById('submit');
 const arrive = document.getElementById('arrive');
 
+//opens new tab if the user needs help finding the zip code for their destination
 const findZip = () => {
     window.open('https://www.geonames.org/postalcode-search.html', '_blank');
 }
 
+//posts formdata to local server
 const postData = async (url, data = {}) => {
     console.log(url, data);
     const formData = await fetch(url, {
@@ -26,16 +26,16 @@ const postData = async (url, data = {}) => {
     }
 };
 
+//stops the user from entering a date in the past as their arrival date
 const setMinDate = (e) => {
-
     let today = new Date();
     let day = today.getDate();
-    let month = today.getMonth()+1; //January is 0
+    let month = today.getMonth()+1; //months are zero-indexed
     let year = today.getFullYear();
     
-         if(day<10){
-                day=`0${day}`;
-            } 
+        if(day<10){
+            day=`0${day}`;
+        } 
         if(month<10){
             month=`0${month}`;
         }
@@ -46,15 +46,12 @@ const setMinDate = (e) => {
             alert("Can\'t set arrival date before today!");
             arrive.value = '';
         }
+};
 
-    }
-
-const handleSubmit = (e) => {
-    //setMinDate();
-    
+//requires user to fill out all required form values, then passes formdata to post function, where it's sent to local server
+const handleSubmit = (e) => {    
     let zipCode = zip.value;
     let cityName = city.value;
-    //let countryCode = country.options[country.selectedIndex].value;  
 
     if(zipCode == "" || cityName == ""){
         alert('All required fields need to be filled out!');
@@ -62,14 +59,12 @@ const handleSubmit = (e) => {
     }
     else {
         let formData = new FormData(this);
-        //let data = {zp: zipCode, cty: cityName, cntry: countryCode};
         postData('/test', formData);    
     }
  
 };
 
 export { 
-    //getLocation,
     postData,
     handleSubmit,
     findZip,
